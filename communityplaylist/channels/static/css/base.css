@@ -1,0 +1,141 @@
+body{
+  background: #E8DFC2;
+  background-image: url('/static/background');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position:50% 5%;
+  background-attachment:fixed;
+  text-align:center;
+}
+
+nav
+{
+	background: #222222;
+}
+nav button{
+	margin:0px;
+	background: #222222;
+	border:0px;
+	height:34px;
+	width:34px;
+}
+
+.navbar-static-top {
+  margin-bottom: 19px;
+}
+
+#player{	
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#now_playing{
+  color:white;
+  float: left;
+  padding: 15px 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+#show-items{	
+  background-color: #E6E6E6;
+}
+
+#show-items td a:hover {
+  text-decoration: underline;
+  color: orange;
+}
+
+#show-items a,
+#show-items a:link {
+    float: right;
+    color: orange;
+}
+
+#queue-list{  
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.queue-control{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alerts{
+  margin-left: 28%;
+  margin-right: 28%;
+}
+
+#newSongUrl{
+    height: 30px;
+    width: 400px;
+    padding: 5px;
+    font-size: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom:10px;
+}
+
+#addNewSong{
+    padding: 5px;
+    margin:5px;
+    height: 25px;
+    font-size: 12px;
+}
+
+#player-controls img,
+#player-vinheta img{
+  width:24px;
+  height:auto;
+}
+
+.vote img{
+  width:10px;
+  height:auto;
+  margin:5px 10px;
+}
+
+span{
+  font-family:"Times New Roman", Times, serif;
+}
+
+.videoitem{
+  font-family:"Times New Roman", Times, serif;
+  font-size:15px;  
+}
+
+
+#controls{
+  background-color:rgba(238,233,233,0.65);
+  max-width: 800px;
+  margin-top: 20px;
+}
+
+.header{
+  background-color:rgba(238,233,233,0.8);
+}
+
+
+#controls p{
+  font-family:"Times New Roman", Times, serif;
+  font-weight: bold;
+}
+
+
+#background-chooser{
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#background-chooser button{
+  float: left;
+  font-size:10px;
+}
+
+#background-chooser a{
+  display: block;
+}

@@ -4,26 +4,22 @@
 #               01 February, 2014 - Campinas,SP - Brazil
 
 import logging
-from models import Playlist,Vote
+from models import Channel,Playlist,Vote
 logger = logging.getLogger("DBManager")
 
 
 class DatabaseManager:
-	__instance = None
+	def __init__(self,channel):
+		assert channel is not None
 
-	# This is a singleton
-	def __new__(cls,*args,**kwargs):
-		if not cls.__instance:
-			cls.__instance = super(DatabaseManager,cls).__new__(cls,*args,**kwargs)
-		return cls.__instance
-
-	def __init__(self):
+		# If this channel doesn't exists, this exception should be catched outside this class
+		self.channel = Channel.objects.get(id=channel)
 		self.playlist = Playlist
 		self.vote = Vote
 		logger.info("Database manager started")
 
 	def get_playlist(self):
-		result = self.playlist.objects.filter(played=False,removed=False)
+		result = self.playlist.objects.filter(channel=self.channel,played=False,removed=False)
 		result.order_by('id')
 		result_formatted = [[	video.id,
 								video.url]
@@ -31,7 +27,8 @@ class DatabaseManager:
 		return result_formatted
 
 	def get_votes(self):
-		result = self.vote.objects.filter(video__played=False,video__removed=False).order_by('created_at')
+		pl = self.playlist.objects.filter(channel=self.channel,played=False,removed=False)
+		result = self.vote.objects.filter(video=pl,video__played=False,video__removed=False).order_by('created_at')
 
 		result_formatted = [[	vote.video.url,
 								vote.tag,
@@ -41,18 +38,18 @@ class DatabaseManager:
 		return result_formatted
 
 	def add_video(self,url,creator):
-		video = self.playlist(url=url)
+		video = self.channel.playlist_set.create(url=url)
 		video.save()
 		video.vote_set.create(tag=creator,positive=1)
 		return True
 
 	def add_vote(self,url,creator,positive,negative):
-		video = self.playlist.objects.get(url=url)
+		video = self.playlist.objects.get(channel=self.channel,url=url)
 		video.vote_set.create(tag=creator,positive=positive,negative=negative)
-
+		return True
 
 	def rm_video(self,url):
-		video = self.playlist.objects.get(url=url)
+		video = self.playlist.objects.get(channel=self.channel,url=url)
 		if video is not None:
 			video.delete()
 		else:
@@ -60,10 +57,12 @@ class DatabaseManager:
 		return True
 
 	def clear_all(self):
-		self.playlist.objects.filter(played=False,removed=False).update(removed=True)
+		self.playlist.objects.filter(	channel=self.channel,
+										played=False,
+										removed=False).update(removed=True)
 
 
 	def mark_video_played(self,url):
-		video = self.playlist.objects.get(url=url)
+		video = self.playlist.objects.get(channel=self.channel,url=url)
 		video.played = 1
 

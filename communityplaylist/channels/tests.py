@@ -6,6 +6,8 @@ import string
 import tempfile
 from queue_manager import QueueManager
 from django.test import TestCase
+from models import Channel
+from django.contrib.auth.models import User
 
 
 # Create your tests here.
@@ -13,7 +15,13 @@ from django.test import TestCase
 class TestSequenceFunctions(TestCase):
 
     def setUp(self):
-    	self.queue = QueueManager()
+        user = User.objects.create(username='dummy')
+        user.save()
+
+        channel = Channel(creator=user)
+        channel.save()
+    	
+        self.queue = QueueManager(channel=channel.id)
 
     def test_db_connection(self):
         print "Test 1"

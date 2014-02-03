@@ -1,7 +1,17 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+class Channel(models.Model):
+	creator = models.ForeignKey(User)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		value = "Created at %s by %s" %(self.created_at,self.creator)
+		return value
 
 # Create your models here.
 class Playlist(models.Model):
+	channel = models.ForeignKey(Channel)
 	url = models.CharField(max_length=20)
 	played = models.BooleanField(default=False)
 	removed = models.BooleanField(default=False)

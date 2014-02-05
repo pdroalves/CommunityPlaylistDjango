@@ -5,6 +5,7 @@ import re
 import string
 import logging
 from queue_manager import QueueManager
+from database_manager import DatabaseManager
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
@@ -34,10 +35,6 @@ def __get_backgrounds():
         backgrounds.sort()
     print backgrounds
     return backgrounds,backgrounds_directory
-
-def __get_current_background():
-    # To-do
-    return ''
 
 def __get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -90,7 +87,7 @@ def update(request,channel_id):
     backgrounds,backgrounds_directory = __get_backgrounds()
     return HttpResponse(json.dumps(
                 {"queue":queue.getQueue(),
-                "current_background":__get_current_background(),
+                "current_background":get_current_background(channel = channel_id),
                 "backgrounds_directory":backgrounds_directory,
                 "backgrounds":backgrounds
                 }
@@ -129,3 +126,30 @@ def rm(request,channel_id):
     logger.info('Removing '+url)
     queue.rm(url)
     return HttpResponse(1)
+
+def vote(request,channel_id):
+    queue = QueueManager(channel = channel_id)
+
+    url = request.GET('url')
+    positive = int(request.GET('positive'))
+    negative = int(request.GET('negative'))
+    creator = __get_client_ip(request)
+
+    r = queue.register_vote(    url=url,
+                                positive=positive,
+                                negative=negative,
+                                creator=creator
+                            )
+    if not r:
+        logger.critical("Error on vote.")        
+        #flash("Seu voto não pôde ser registrado. Tente novamente.","error") #To-Do
+
+def get_current_background(channel):
+    dbm = DatabaseManager(channel = channel)
+    return dbm.get_current_background()
+
+def set_background(request,channel_id):
+    dbm = DatabaseManager(channel = channel_id)
+    new_background = request.GET['background']
+    dbm.set_background(background=new_background)
+    return HttpResponse(1)  

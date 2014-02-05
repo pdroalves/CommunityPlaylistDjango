@@ -17,6 +17,14 @@ class DatabaseManager:
 		self.vote = Vote
 		logger.info("Database manager started")
 
+	def get_current_background(self):
+		return self.channel.background
+		
+	def set_background(self,background):
+		assert type(background) == str or type(background) == unicode
+		self.channel.background = background
+		self.channel.save()
+
 	def get_playlist(self):
 		result = self.playlist.objects.filter(channel=self.channel,played=False,removed=False)
 		result.order_by('id')

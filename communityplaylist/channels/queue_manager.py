@@ -10,7 +10,6 @@ import string
 from youtube_handler import YoutubeHandler
 from database_manager import DatabaseManager
 
-
 logger = logging.getLogger("QueueManager")
 
 class QueueManager:

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class Channel(models.Model):
 	creator = models.ForeignKey(User)
 	created_at = models.DateTimeField(auto_now_add=True)
+	background = models.CharField(max_length=1000,default='Big_Pine_landscape.jpg')
 
 	def __unicode__(self):
 		value = "Created at %s by %s" %(self.created_at,self.creator)

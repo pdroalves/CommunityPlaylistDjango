@@ -20,6 +20,7 @@ class QueueManager:
 		self.queue = []
 		self.db_manager = DatabaseManager(channel=channel)
 		self.conn = None
+		self.paused = True
 		self.yth = YoutubeHandler()
 		self.__start_pause_ts=0
 		logger.info("Queue started")

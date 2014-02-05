@@ -11,7 +11,6 @@ logger = logging.getLogger("DBManager")
 class DatabaseManager:
 	def __init__(self,channel):
 		assert channel is not None
-
 		# If this channel doesn't exists, this exception should be catched outside this class
 		self.channel = Channel.objects.get(id=channel)
 		self.playlist = Playlist
@@ -63,6 +62,6 @@ class DatabaseManager:
 
 
 	def mark_video_played(self,url):
-		video = self.playlist.objects.get(channel=self.channel,url=url)
-		video.played = 1
-
+		video = self.playlist.objects.get(channel=self.channel,url=url,played=False,removed=False)
+		video.played = True
+		video.save()

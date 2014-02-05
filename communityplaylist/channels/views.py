@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import os
+import re
+import string
+import logging
 from queue_manager import QueueManager
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
@@ -9,7 +12,11 @@ from django.http import HttpResponse
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-# Create your views here.
+logger = logging.getLogger("ChannelsViews")
+#####################################
+######## SUPPORT METHODS ############
+
+
 def __load_settings(path="settings.json"):
     with open(os.path.join(PROJECT_ROOT,path)) as f:
        settings = json.load(f)
@@ -31,6 +38,17 @@ def __get_backgrounds():
 def __get_current_background():
     # To-do
     return ''
+
+def __get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+####################################
+############# VIEWS ################
 
 def index(request,channel_id):
     global current_background
@@ -70,13 +88,44 @@ def update(request,channel_id):
     queue.sort()
 
     backgrounds,backgrounds_directory = __get_backgrounds()
-    return json.dumps(
+    return HttpResponse(json.dumps(
                 {"queue":queue.getQueue(),
                 "current_background":__get_current_background(),
                 "backgrounds_directory":backgrounds_directory,
                 "backgrounds":backgrounds
                 }
-            )
+            ))
 
+def next(request,channel_id):
+    queue = QueueManager(channel = channel_id)
+    video_url = queue.next()
+    if video_url is not None:
+        return HttpResponse(json.dumps(video_url))
+    else:
+        settings = __load_settings()
+        return HttpResponse(json.dumps(settings['standardEndVideoId']))
 
+def add(request,channel_id):
+    queue = QueueManager(channel = channel_id)
 
+    # Remove non-printable chars
+    element = request.GET['element']
+    creator = __get_client_ip(request)
+    url = filter(lambda x: x in string.printable,element)
+
+    match = re.search('.*[w][a][t][c][h].[v][=]([^/,&]*)',url)
+    if match:
+        queue.add(url=match.group(1),creator=creator)
+        logger.info('Added '+url)
+        return HttpResponse(1)
+    else:
+        logger.critical('Error! URL Invalid '+url)
+        return HttpResponse(0)
+
+def rm(request,channel_id):
+    queue = QueueManager(channel = channel_id)
+
+    url = request.GET['element']
+    logger.info('Removing '+url)
+    queue.rm(url)
+    return HttpResponse(1)

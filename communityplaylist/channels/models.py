@@ -16,9 +16,6 @@ class Playlist(models.Model):
 	played = models.BooleanField(default=False)
 	removed = models.BooleanField(default=False)
 
-	class Meta:
-		unique_together = ("url", "played","removed")
-
 	def __unicode__(self):
 		return self.url
 		

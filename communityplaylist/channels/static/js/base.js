@@ -5,7 +5,7 @@ var playing = 0;
 var SCRIPT_ROOT = "/channels/"+CHANNEL_ID;
 var itemList = $('#show-items');
 var lockBackground = false;
-var backgroundDir = 'backgrounds/';
+var backgroundDir = '/static/backgrounds/';
 var currentBG = ''
 
 
@@ -179,9 +179,6 @@ var update_function = function(){
                     update_index();
 
                     // Change background
-                    if(data.backgrounds_directory != backgroundDir){
-                        backgroundDir = data.backgrounds_directory;
-                    }
                     if(data.current_background && !lockBackground){
                         currentBG = data.current_background;
                         change_background(data.current_background); 
@@ -191,7 +188,7 @@ var update_function = function(){
         };
 function change_background(background){
     var current_background = $('body').css('background-image');
-    var new_background = 'url('+STATIC_URL+backgroundDir+'/'+background+')';
+    var new_background = 'url('+backgroundDir+'/'+background+')';
     if(new_background != current_background){
         //console.log(new_background);
         $('body').css('background-image',new_background);

@@ -88,7 +88,6 @@ def update(request,channel_id):
     return HttpResponse(json.dumps(
                 {"queue":queue.getQueue(),
                 "current_background":get_current_background(channel = channel_id),
-                "backgrounds_directory":backgrounds_directory,
                 "backgrounds":backgrounds
                 }
             ))
@@ -150,6 +149,6 @@ def get_current_background(channel):
 
 def set_background(request,channel_id):
     dbm = DatabaseManager(channel = channel_id)
-    new_background = request.GET['background']
+    new_background = request.GET['new_background']
     dbm.set_background(background=new_background)
     return HttpResponse(1)  

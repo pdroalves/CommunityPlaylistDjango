@@ -36,7 +36,7 @@
             <ul>
               <li id="login">
                   {% if user.is_authenticated %}
-                <a id="login-trigger" href="/channels/logout">
+                <a id="login-trigger" href="/channels/{{ CHANNEL_ID }}/logout">
                   Logout 
                 </a>
                   {% else %}
@@ -45,7 +45,7 @@
                 </a>
                 <div id="login-content" style="display: none;">
                  <div class="container">
-                    <form class="form-signin" action="/channels/login/" method=post>
+                    <form class="form-signin" action="/channels/{{ CHANNEL_ID }}/login/" method=post>
                     {% csrf_token %}
                       <h2 class="form-signin-heading">Login</h2>
                       <input name=username type="text" class="form-control" placeholder="Username" autofocus="">
@@ -232,7 +232,10 @@
       </div>
     </div>
   
-    <script language="javascript">var STATIC_URL = "{{ STATIC_URL|escapejs }}";</script>
+    <script language="javascript">
+	var STATIC_URL = "{{ STATIC_URL|escapejs }}";
+	var CHANNEL_ID = "{{ CHANNEL_ID|escapejs }}";
+	</script>
     <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
     <script src="{% static 'js/jquery.ui.core.js' %}"></script>
     <script src="{% static 'js/jquery.ui.widget.js' %}"></script>

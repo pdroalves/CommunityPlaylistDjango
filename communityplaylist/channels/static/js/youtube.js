@@ -57,7 +57,7 @@ function playVideoByUrl(url){
 };
 
 function playNextVideo(){
-    $.getJSON( SCRIPT_ROOT + '/_next',
+    $.getJSON( SCRIPT_ROOT + '/next',
             {},
             function(item){
                 console.log("Proximo video "+item);
@@ -84,7 +84,7 @@ function updateStatus(){
         current_time = player.getCurrentTime();
     }
 
-    $.getJSON( SCRIPT_ROOT + '/_set_playing',
+    $.getJSON( SCRIPT_ROOT + '/set_playing',
         {'now_playing':status,
           'song_id':song_playing,
          'song_playing':song_title,

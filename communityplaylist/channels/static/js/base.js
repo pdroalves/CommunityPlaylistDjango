@@ -2,7 +2,7 @@ window.URL = window.URL || window.webkitURL;
 
 var playing = 0;
 //var SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-var SCRIPT_ROOT = ""
+var SCRIPT_ROOT = "/channels/"+CHANNEL_ID;
 var itemList = $('#show-items');
 var lockBackground = false;
 var backgroundDir = 'backgrounds/';
@@ -11,13 +11,13 @@ var currentBG = ''
 
 function periodic_updates(){    
     update_function();
-    update_status_function();
-    //setTimeout(periodic_updates,1000);
+    //update_status_function();
+    setTimeout(periodic_updates,1000);
 };
 
 $(document).ready(function() {
     periodic_updates();
-    //setTimeout(periodic_updates,1000);
+    setTimeout(periodic_updates,1000);
 });
 
 
@@ -56,7 +56,7 @@ var cmp = function(listA,listB){
 };
 
 var update_status_function = function(){
-    $.getJSON(SCRIPT_ROOT + '/_get_playing',
+    $.getJSON(SCRIPT_ROOT + '/get_playing',
         {},
         function(status){
 	   try{
@@ -114,7 +114,7 @@ var get_video_container = function(id,title,duration,vpositive,vnegative){
             +"<td>"
                 +"<div  class='vote'>"
                     +"<a >"
-                        +"<img srcSTATIC_URL+=images/like.png alt='Next' id='like' />"
+                        +"<img src=\""+STATIC_URL+"images/like.png\" alt='Next' id='like' />"
                     +"</a>"
                     +"<span class='votepos'>"+vpositive+"</span>"
                 +"</div>"
@@ -128,7 +128,7 @@ var get_video_container = function(id,title,duration,vpositive,vnegative){
 };
 
 var update_function = function(){
-           $.getJSON( SCRIPT_ROOT+'/_update',
+           $.getJSON( SCRIPT_ROOT+'/update',
                 {},
                 function(data){
                     var items = data.queue;
@@ -204,7 +204,7 @@ function change_background(background){
 var add_function = function(newItem){
             var len = 0
             if(newItem.length > 0){
-                 $.getJSON( SCRIPT_ROOT+'/_add_url',
+                 $.getJSON( SCRIPT_ROOT+'/add',
                     {element:newItem},
                     function(n){
                         queue_size = n
@@ -216,7 +216,7 @@ var add_function = function(newItem){
         };
 var rm_function = function(id){
     console.log(id);
-            $.getJSON( SCRIPT_ROOT+'/_rm_url',
+            $.getJSON( SCRIPT_ROOT+'/rm',
                 {element:id},
                 function(n){
                     update_function()
@@ -275,7 +275,7 @@ $("*").delegate("tr div.vote a","click",function(e){
         var negative = 1;        
     }
 
-    $.getJSON(SCRIPT_ROOT+'/_vote',
+    $.getJSON(SCRIPT_ROOT+'/vote',
                 {"url":id,"positive":positive,"negative":negative},
                 update_function()    
             );
@@ -289,7 +289,7 @@ $("*").delegate("tr a.remove", "click", function(e) {
 });
 
 $("#clear-all").click(function(){
-     $.getJSON(    SCRIPT_ROOT+'/_clear-all',
+     $.getJSON(    SCRIPT_ROOT+'/clear-all',
                     {},
                     update_function()    
                 );
@@ -439,7 +439,7 @@ $("#background-chooser a").click(function(){
 
 $("#save-background").click(function(){
     console.log("Saving...")
-    $.getJSON( SCRIPT_ROOT+'/_set_background',
+    $.getJSON( SCRIPT_ROOT+'/setbg',
                 {new_background:currentBG},
                 function(data){
                     console.log("Done!");

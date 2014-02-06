@@ -53,7 +53,7 @@ def index(request,channel_id):
     context = { "title":__get_title(),
                 "backgrounds":backgrounds,
                 "current_background":'',
-                "channel":channel_id
+                "CHANNEL_ID":channel_id
                 }
     return render(request,'channels/index.html',context)
 
@@ -65,13 +65,13 @@ def log_in(request,channel_id):
         if user.is_active:
             login(request, user)
             # Redirect to a success page.
-            return redirect('index')
+            return redirect('index',channel_id)
         else:
             # Return a 'disabled account' error message
-            return redirect('index')
+            return redirect('index',channel_id)
     else:
         # Return an 'invalid login' error message.
-        return redirect('index')
+        return redirect('index',channel_id)
 
 def log_out(request,channel_id):
     if request.user.is_authenticated():

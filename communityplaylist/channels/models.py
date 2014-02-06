@@ -3,11 +3,12 @@ from django.contrib.auth.models import User
 
 class Channel(models.Model):
 	creator = models.ForeignKey(User)
+	channel_name = models.CharField(max_length=100,default='')
 	created_at = models.DateTimeField(auto_now_add=True)
 	background = models.CharField(max_length=1000,default='Big_Pine_landscape.jpg')
 
 	def __unicode__(self):
-		value = "Created at %s by %s" %(self.created_at,self.creator)
+		value = "%d - %s" %(self.id,self.channel_name)
 		return value
 
 # Create your models here.
@@ -16,6 +17,7 @@ class Playlist(models.Model):
 	url = models.CharField(max_length=20)
 	played = models.BooleanField(default=False)
 	removed = models.BooleanField(default=False)
+	created_at = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
 		return self.url

@@ -73,3 +73,6 @@ class DatabaseManager:
 		video = self.playlist.objects.get(channel=self.channel,url=url,played=False,removed=False)
 		video.played = True
 		video.save()
+
+	def get_title(self):
+		return self.channel.channel_name

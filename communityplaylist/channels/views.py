@@ -51,7 +51,8 @@ def __get_client_ip(request):
 def index(request,channel_id):
     global current_background
     backgrounds,backgrounds_directory = __get_backgrounds()
-    context = { "title":__get_title(),
+    dbm = DatabaseManager(channel = channel_id)
+    context = { "title":dbm.get_title(),
                 "backgrounds":backgrounds,
                 "current_background":'',
                 "CHANNEL_ID":channel_id

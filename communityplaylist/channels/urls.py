@@ -12,4 +12,6 @@ urlpatterns = patterns('',
     url(r'^(?P<channel_id>\d+)/rm/', views.rm,name='rm'),
     url(r'^(?P<channel_id>\d+)/vote/', views.vote,name='vote'),
     url(r'^(?P<channel_id>\d+)/setbg/', views.set_background,name='setbg'),
+    url(r'^(?P<channel_id>\d+)/get_playing/', views.get_playing,name='get_playing'),
+    url(r'^(?P<channel_id>\d+)/set_playing/', views.set_playing,name='set_playing'),
 )

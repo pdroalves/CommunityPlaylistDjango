@@ -85,10 +85,13 @@ function updateStatus(){
     }
 
     $.getJSON( SCRIPT_ROOT + '/set_playing',
-        {'now_playing':status,
-          'song_id':song_playing,
-         'song_playing':song_title,
-          'current_time':current_time},
+        {   
+            'title':'',
+            'now_playing':status,
+            'song_id':song_playing,
+            'song_playing':song_title,
+            'current_time':current_time
+        },
          function(s){
             console.log(s)
          }

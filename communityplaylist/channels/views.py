@@ -10,6 +10,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.http import HttpResponse
+from django.core.cache import cache
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -152,3 +153,28 @@ def set_background(request,channel_id):
     new_background = request.GET['new_background']
     dbm.set_background(background=new_background)
     return HttpResponse(1)  
+
+def set_playing(request,channel_id):
+    now_playing = {
+            'title':request.GET['title'],
+            'now_playing':request.GET['now_playing'],
+            'song_id':request.GET['song_id'],
+            'song_playing':request.GET['song_playing'],
+            'current_time':request.GET['current_time']
+    }
+    cache.set('now_playing',now_playing)
+    return HttpResponse(1)
+
+def get_playing(request,channel_id):
+    if not cache.has_key('now_playing'):
+        now_playing = { 'title':'Empty',
+                        'now_playing':-1,
+                        'song_id':'Empty',
+                        'song_playing':'Empty',
+                        'current_time':0
+                        }          
+    else:
+        now_playing = cache.get('now_playing')
+    
+    logger.info("Now playing: "+str(now_playing['song_playing']))
+    return HttpResponse(json.dumps(now_playing))

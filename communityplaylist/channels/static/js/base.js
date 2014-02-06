@@ -11,7 +11,7 @@ var currentBG = ''
 
 function periodic_updates(){    
     update_function();
-    //update_status_function();
+    update_status_function();
     setTimeout(periodic_updates,1000);
 };
 

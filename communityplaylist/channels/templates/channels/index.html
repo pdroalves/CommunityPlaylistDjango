@@ -7,7 +7,7 @@
     <meta name="author" content="">
    {% load static from staticfiles %}
 
-    <title>{{ title }} - Channel {{ channel }}</title>
+    <title>{{ title }} - Channel {{ channel_id }}</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}"  type="text/css" />
@@ -36,7 +36,7 @@
             <ul>
               <li id="login">
                   {% if user.is_authenticated %}
-                <a id="login-trigger" href="/channels/{{ CHANNEL_ID }}/logout">
+                <a id="login-trigger" href="/channels/{{ channel_id }}/logout">
                   Logout 
                 </a>
                   {% else %}
@@ -45,7 +45,7 @@
                 </a>
                 <div id="login-content" style="display: none;">
                  <div class="container">
-                    <form class="form-signin" action="/channels/{{ CHANNEL_ID }}/login/" method=post>
+                    <form class="form-signin" action="/channels/{{ channel_id }}/login/" method=post>
                     {% csrf_token %}
                       <h2 class="form-signin-heading">Login</h2>
                       <input name=username type="text" class="form-control" placeholder="Username" autofocus="">
@@ -107,16 +107,7 @@
          {% endfor %}
           {% endif %}
         </div>
-          {% if not user.is_authentificated %}
-          <div class="row-fluid">
-            <div class="queue-control">
-                <input id="newSongUrl" type="text" placeholder="Digite o nome da música">
-                <button id="addNewSong" type="button" class="btn btn-default" data-toggle="button">
-                  Add
-                </button>
-            </div>
-          </div>
-          {% endif %}
+
         <div class="row-fluid">
           {% if user.is_authenticated %}
             <div class="col-md-6">
@@ -234,7 +225,7 @@
   
     <script language="javascript">
 	var STATIC_URL = "{{ STATIC_URL|escapejs }}";
-	var CHANNEL_ID = "{{ CHANNEL_ID|escapejs }}";
+	var CHANNEL_ID = "{{ channel_id|escapejs }}";
 	</script>
     <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
     <script src="{% static 'js/jquery.ui.core.js' %}"></script>

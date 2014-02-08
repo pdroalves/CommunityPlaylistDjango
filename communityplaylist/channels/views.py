@@ -4,6 +4,7 @@ import os
 import re
 import string
 import logging
+import time
 from queue_manager import QueueManager
 from database_manager import DatabaseManager
 from django.shortcuts import render,redirect
@@ -13,13 +14,11 @@ from django.http import HttpResponse
 from django.core.cache import cache
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-
 logger = logging.getLogger("ChannelsViews")
-clock = Clock(logger=logger)
 
 #####################################
 ######## SUPPORT METHODS ############
-class clock:
+class Clock:
     start_timer = 0
     def __init__(self,logger):
         self.logger =logger
@@ -32,6 +31,7 @@ class clock:
             return time.time() - start
         else:
             return 0
+clock = Clock(logger=logger)
 
 def __load_settings(path="settings.json"):
     with open(os.path.join(PROJECT_ROOT,path)) as f:

@@ -15,9 +15,23 @@ from django.core.cache import cache
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 logger = logging.getLogger("ChannelsViews")
+clock = Clock(logger=logger)
+
 #####################################
 ######## SUPPORT METHODS ############
-
+class clock:
+    start_timer = 0
+    def __init__(self,logger):
+        self.logger =logger
+    def start(self):
+        self.start_timer = time.time()
+    def stop(self):
+        if self.start_timer > 0:
+            start = self.start_timer
+            self.start_timer = 0
+            return time.time() - start
+        else:
+            return 0
 
 def __load_settings(path="settings.json"):
     with open(os.path.join(PROJECT_ROOT,path)) as f:
@@ -45,24 +59,29 @@ def __get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+
 ####################################
 ############# VIEWS ################
 
 def index(request,channel_id):
+    clock.start()
     global current_background
     backgrounds,backgrounds_directory = __get_backgrounds()
     dbm = DatabaseManager(channel = channel_id)
     context = { "title":dbm.get_title(),
                 "backgrounds":backgrounds,
                 "current_background":'',
-                "CHANNEL_ID":channel_id
+                "channel_id":channel_id
                 }
+    logger.info("Index returned in %f seconds" % clock.stop())
     return render(request,'channels/index.html',context)
 
 def log_in(request,channel_id):
+    clock.start()
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
+    logger.info("Login returned in %f seconds" % clock.stop())
     if user is not None:
         if user.is_active:
             login(request, user)
@@ -76,17 +95,22 @@ def log_in(request,channel_id):
         return redirect('index',channel_id)
 
 def log_out(request,channel_id):
+    clock.start()
     if request.user.is_authenticated():
         logout(request)
+        logger.info("Logout returned in %f seconds" % clock.stop())
         return redirect('index',channel_id)
     else:
-        return redirect('index',channel_id)
+        logger.info("Logout returned in %f seconds" % clock.stop())
+	return redirect('index',channel_id)
 
 def update(request,channel_id):
+    clock.start()
     queue = QueueManager(channel = channel_id)
     queue.sort()
 
     backgrounds,backgrounds_directory = __get_backgrounds()
+    logger.info("Update returned in %f seconds" % clock.stop())
     return HttpResponse(json.dumps(
                 {"queue":queue.getQueue(),
                 "current_background":get_current_background(channel = channel_id),
@@ -95,6 +119,7 @@ def update(request,channel_id):
             ))
 
 def next(request,channel_id):
+    clock.start()
     queue = QueueManager(channel = channel_id)
     video_url = queue.next()
     if video_url is not None:

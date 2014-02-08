@@ -95,7 +95,9 @@ nav button{
   width:10px;
   height:auto;
   margin:5px 10px;
+  cursor:pointer;
 }
+
 
 span{
   font-family:"Times New Roman", Times, serif;

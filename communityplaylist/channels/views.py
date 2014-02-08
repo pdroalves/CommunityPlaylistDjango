@@ -78,9 +78,9 @@ def log_in(request,channel_id):
 def log_out(request,channel_id):
     if request.user.is_authenticated():
         logout(request)
-        return redirect('index')
+        return redirect('index',channel_id)
     else:
-        return redirect('index')
+        return redirect('index',channel_id)
 
 def update(request,channel_id):
     queue = QueueManager(channel = channel_id)

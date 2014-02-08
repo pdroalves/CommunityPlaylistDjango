@@ -29,7 +29,9 @@ class DatabaseManager:
 		result = self.playlist.objects.filter(channel=self.channel,played=False,removed=False)
 		result.order_by('id')
 		result_formatted = [[	video.id,
-								video.url]
+								video.url,
+								video.title,
+								video.duration]
 							for video in result]
 		return result_formatted
 
@@ -44,8 +46,9 @@ class DatabaseManager:
 							for vote in result]
 		return result_formatted
 
-	def add_video(self,url,creator):
-		video = self.channel.playlist_set.create(url=url)
+	def add_video(self,url,creator,title='title',duration=0):
+		logger.info("Adding video %s" % url)
+		video = self.channel.playlist_set.create(url=url,title=title,duration=duration)
 		video.save()
 		video.vote_set.create(tag=creator,positive=1)
 		return True
@@ -70,9 +73,10 @@ class DatabaseManager:
 
 
 	def mark_video_played(self,url):
-		video = self.playlist.objects.get(channel=self.channel,url=url,played=False,removed=False)
-		video.played = True
-		video.save()
+		videos = self.playlist.objects.filter(channel=self.channel,url=url,played=False,removed=False)
+		for video in videos:
+			video.played = True
+			video.save()
 
 	def get_title(self):
 		return self.channel.channel_name

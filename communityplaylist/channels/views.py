@@ -31,7 +31,6 @@ class Clock:
             return time.time() - start
         else:
             return 0
-clock = Clock(logger=logger)
 
 def __load_settings(path="settings.json"):
     with open(os.path.join(PROJECT_ROOT,path)) as f:
@@ -64,6 +63,7 @@ def __get_client_ip(request):
 ############# VIEWS ################
 
 def index(request,channel_id):
+    clock = Clock(logger=logger)
     clock.start()
     global current_background
     backgrounds,backgrounds_directory = __get_backgrounds()
@@ -77,6 +77,7 @@ def index(request,channel_id):
     return render(request,'channels/index.html',context)
 
 def log_in(request,channel_id):
+    clock = Clock(logger=logger)
     clock.start()
     username = request.POST['username']
     password = request.POST['password']
@@ -95,6 +96,7 @@ def log_in(request,channel_id):
         return redirect('index',channel_id)
 
 def log_out(request,channel_id):
+    clock = Clock(logger=logger)
     clock.start()
     if request.user.is_authenticated():
         logout(request)
@@ -105,6 +107,7 @@ def log_out(request,channel_id):
 	return redirect('index',channel_id)
 
 def update(request,channel_id):
+    clock = Clock(logger=logger)
     clock.start()
     queue = QueueManager(channel = channel_id)
     queue.sort()
@@ -119,16 +122,21 @@ def update(request,channel_id):
             ))
 
 def next(request,channel_id):
+    clock = Clock(logger=logger)
     clock.start()
     queue = QueueManager(channel = channel_id)
     video_url = queue.next()
     if video_url is not None:
+        logger.info("Next returned in %f seconds" % clock.stop())
         return HttpResponse(json.dumps(video_url))
     else:
         settings = __load_settings()
+        logger.info("Next returned in %f seconds" % clock.stop())
         return HttpResponse(json.dumps(settings['standardEndVideoId']))
 
 def add(request,channel_id):
+    clock = Clock(logger=logger)
+    clock.start()
     queue = QueueManager(channel = channel_id)
 
     # Remove non-printable chars
@@ -140,20 +148,27 @@ def add(request,channel_id):
     if match:
         queue.add(url=match.group(1),creator=creator)
         logger.info('Added '+url)
+        logger.info("add returned in %f seconds" % clock.stop())
         return HttpResponse(1)
     else:
         logger.critical('Error! URL Invalid '+url)
+        logger.info("add returned in %f seconds" % clock.stop())
         return HttpResponse(0)
 
 def rm(request,channel_id):
+    clock = Clock(logger=logger)
+    clock.start()
     queue = QueueManager(channel = channel_id)
 
     url = request.GET['element']
     logger.info('Removing '+url)
     queue.rm(url)
+    logger.info("rm returned in %f seconds" % clock.stop())
     return HttpResponse(1)
 
 def vote(request,channel_id):
+    clock = Clock(logger=logger)
+    clock.start()
     queue = QueueManager(channel = channel_id)
 
     url = request.GET('url')
@@ -168,19 +183,32 @@ def vote(request,channel_id):
                             )
     if not r:
         logger.critical("Error on vote.")        
-        #flash("Seu voto não pôde ser registrado. Tente novamente.","error") #To-Do
+        #flash("Seu voto não pôde ser registrado. Tente novamente.","error") #To-
+        logger.info("rm returned in %f seconds" % clock.stop())
+        return HttpResponse(0)
+
+    logger.info("vote returned in %f seconds" % clock.stop())
+    return HttpResponse(1)
 
 def get_current_background(channel):
+    clock = Clock(logger=logger)
+    clock.start()
     dbm = DatabaseManager(channel = channel)
+    logger.info("get_current_background returned in %f seconds" % clock.stop())
     return dbm.get_current_background()
 
 def set_background(request,channel_id):
+    clock = Clock(logger=logger)
+    clock.start()
     dbm = DatabaseManager(channel = channel_id)
     new_background = request.GET['new_background']
     dbm.set_background(background=new_background)
+    logger.info("set_background returned in %f seconds" % clock.stop())
     return HttpResponse(1)  
 
 def set_playing(request,channel_id):
+    clock = Clock(logger=logger)
+    clock.start()
     now_playing = {
             'title':request.GET['title'],
             'now_playing':request.GET['now_playing'],
@@ -189,9 +217,12 @@ def set_playing(request,channel_id):
             'current_time':request.GET['current_time']
     }
     cache.set('now_playing',now_playing)
+    logger.info("set_playing returned in %f seconds" % clock.stop())
     return HttpResponse(1)
 
 def get_playing(request,channel_id):
+    clock = Clock(logger=logger)
+    clock.start()
     if not cache.has_key('now_playing'):
         now_playing = { 'title':'Empty',
                         'now_playing':-1,
@@ -203,4 +234,5 @@ def get_playing(request,channel_id):
         now_playing = cache.get('now_playing')
     
     logger.info("Now playing: "+str(now_playing['song_playing']))
+    logger.info("get_playing returned in %f seconds" % clock.stop())
     return HttpResponse(json.dumps(now_playing))

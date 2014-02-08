@@ -83,7 +83,7 @@ class TestSequenceFunctions(TestCase):
                             negative=0,
                             creator="127.0.0.1"))
 
-        # Asserts votes for queues of a single item 
+        # Asserts votes for queues of a single item
         self.assertEqual(self.queue.add(url="tGiEsjtfJdg",creator="127.0.0.1"),(True,True)) #1,0
         self.assertEqual(self.queue.add(url="tGiEsjtfJdg",creator="127.0.0.1"),(True,False)) #1,0
         elements = self.queue.getQueue()

@@ -15,7 +15,7 @@ class Channel(models.Model):
 class Playlist(models.Model):
 	channel = models.ForeignKey(Channel)
 	url = models.CharField(max_length=20)
-	title = models.CharField(max_length=50)
+	title = models.CharField(max_length=200)
 	duration = models.IntegerField(default=0)
 	played = models.BooleanField(default=False)
 	removed = models.BooleanField(default=False)

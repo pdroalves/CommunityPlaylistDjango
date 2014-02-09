@@ -32,9 +32,8 @@ var check_index_and_sort = function(base){
         return;
     };
     $("tr").each(function (index,item){
-
         if(index == 0 && item.getAttribute("id") != base[0].url){
-            $("tr#"+base[0].url).insertBefore($("tr")[0]);
+            $("tr#"+base[0].url).insertBefore(item[0]);
         }else if(index < base.length){
             if(item.getAttribute("id") != base[index].url){
                 $("tr#"+base[index].url).insertAfter($("tr")[index-1]);            
@@ -145,7 +144,6 @@ var update_function = function(){
                             console.log("removing "+video.innerText);
                             $("#"+video.parentNode.parentNode.getAttribute('id')).fadeOut("fast",function(){
                                 $("#"+video.parentNode.parentNode.getAttribute('id')).remove();
-                                update_index();
                             }                            
                             );
                         }
@@ -153,7 +151,12 @@ var update_function = function(){
 
                     // Add new items
                     for (item in items){                    
-                        var url_item = get_video_container(items[item].url,items[item].title,items[item].duration,items[item].positive,items[item].negative);
+                        var url_item = get_video_container( items[item].url,
+                                                            items[item].title,
+                                                            items[item].duration,
+                                                            items[item].positive,
+                                                            items[item].negative
+                                                        );
                         if($("#"+items[item].url).size() == 0){
                             itemList.append(url_item);                            
                             $("#"+items[item].url).fadeIn(function(){});   

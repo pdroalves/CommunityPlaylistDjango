@@ -18,7 +18,7 @@ class VoteInLine(admin.TabularInline):
 	extra = 1
 
 class PlaylistAdmin(admin.ModelAdmin):
-	list_display = ('channel','url','played','removed')
+	list_display = ('id','channel','title','duration','url','played','removed')
 	list_filter = ['channel','played','removed']
 	inlines = [VoteInLine]
 	actions = [set_played,set_not_played,set_removed,set_not_removed]

@@ -110,7 +110,6 @@ def update(request,channel_id):
     clock = Clock(logger=logger)
     clock.start()
     queue = QueueManager(channel = channel_id)
-    queue.sort()
 
     backgrounds,backgrounds_directory = __get_backgrounds()
     logger.info("Update returned in %f seconds" % clock.stop())

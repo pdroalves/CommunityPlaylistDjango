@@ -262,18 +262,23 @@ class QueueManager:
 		self.paused = paused
 		self.update_playtime()
 
-	def getQueue(self):
+	def getQueue(self,sort=True):
 		db,queue = self.get_db() # Just asserts that there is something inside the db
 		fila = []
 		if len(queue) > 0:
 			# Get queue
-			fila += [{
+			fila += [{  
+						"id":element.get("id"),
 						"url":element.get('url'),
 						"title":element.get('title'),
 						"duration":element.get('duration'),
 						"positive":len(element.get('voters').get('positive')),
 						"negative":len(element.get('voters').get('negative'))
 					} for element in queue]
+
+			# Sorting
+			lambda_votes = lambda x: (x["positive"]-x["negative"],x["id"])
+			fila.sort(key=lambda_votes,reverse=True)
 
 		return fila
 
@@ -289,57 +294,3 @@ class QueueManager:
 
 		logger.info("Queue cleared.")
 		return
-
-	def __is_starving(self,element,starvation_rate=2,min_starvation_time=0):
-		assert element.has_key("added_at")
-		assert element.has_key("playtime")
-		assert element.has_key("data")
-		if not element.get("data").has_key("duration"):
-			duration = 120
-		else:
-			duration = element.get("data").get("duration")
-
-		return time.time() - element.get("added_at")-element.get("playtime")*starvation_rate-duration > min_starvation_time
-
-	def __custom_sort(self,starvation_rate=3):
-		db,queue = self.get_db()
-		self.update_playtime()
-
-		lambda_votes = lambda x:len(x.get("voters").get("positive"))-len(x.get("voters").get("negative"))
-		#lambda_starvation = lambda x: self.__is_starving(element=x,starvation_rate=starvation_rate)
-		lambda_starvation = lambda x: False
-		
-		hungry = [x for x in queue if lambda_starvation(x)]
-
-		if len(hungry) > 0:
-			print ','.join([x.get("title")+"Playtime: "+str(x.get("playtime"))+" Starvation:"+str(lambda_starvation(x)) for x in hungry])
-
-		if len(hungry) > 1:
-			for x,y in zip(hungry,hungry[1:]):
-				queue[queue.index(x)+1:queue.index(y)-1] = sorted(queue[queue.index(x)+1:queue.index(y)-1],key=lambda_votes,reverse=True)
-		elif len(hungry) == 1:
-			x = hungry[0]
-			queue[0:queue.index(x)-1] = sorted(queue[0:queue.index(x)-1],key=lambda_votes,reverse=True)
-			queue[queue.index(x)+1:len(queue)] = sorted(queue[queue.index(x)+1:len(queue)],key=lambda_votes,reverse=True)
-		else:
-			queue[0:len(queue)] = sorted(queue[0:len(queue)],key=lambda_votes,reverse=True)	
-		logger.info("Sorting queue")
-		return True,hungry
-
-	def sort(self):
-		# Ordena a fila de acordo com o tempo de espera e a quantidade de votos
-		lambda_votes = lambda x:len(x.get("voters").get("positive"))-len(x.get("voters").get("negative"))
-		status,hungry=self.__custom_sort()
-		return status,hungry
-
-	# def __sync(self):
-	# 	# Syncs memory queue with database
-	# 	db = self.get_db()
-	# 	db_queue = db.get_playlist()
-
-	# 	queue_ids = [item['id'] for item in queue]
-	# 	db_ids = [item[0] for item in db_queue]
-
-	# 	for id in db_ids:
-	# 		if id not in queue_ids:
-				

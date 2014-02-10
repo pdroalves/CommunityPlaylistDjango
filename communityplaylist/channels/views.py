@@ -9,9 +9,11 @@ from queue_manager import QueueManager
 from database_manager import DatabaseManager
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import permission_required 
 from django.contrib.auth import logout
 from django.http import HttpResponse
 from django.core.cache import cache
+from django.core.urlresolvers import reverse_lazy
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 logger = logging.getLogger("ChannelsViews")
@@ -120,6 +122,7 @@ def update(request,channel_id):
                 }
             ))
 
+@permission_required("channels.boss_permission",raise_exception=True)
 def next(request,channel_id):
     clock = Clock(logger=logger)
     clock.start()
@@ -154,6 +157,7 @@ def add(request,channel_id):
         logger.info("add returned in %f seconds" % clock.stop())
         return HttpResponse(0)
 
+@permission_required("channels.boss_permission",raise_exception=True)
 def rm(request,channel_id):
     clock = Clock(logger=logger)
     clock.start()
@@ -196,6 +200,7 @@ def get_current_background(channel):
     logger.info("get_current_background returned in %f seconds" % clock.stop())
     return dbm.get_current_background()
 
+@permission_required("channels.boss_permission",raise_exception=True)
 def set_background(request,channel_id):
     clock = Clock(logger=logger)
     clock.start()
@@ -205,6 +210,7 @@ def set_background(request,channel_id):
     logger.info("set_background returned in %f seconds" % clock.stop())
     return HttpResponse(1)  
 
+@permission_required("channels.boss_permission",raise_exception=True)
 def set_playing(request,channel_id):
     clock = Clock(logger=logger)
     clock.start()

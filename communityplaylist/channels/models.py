@@ -10,6 +10,10 @@ class Channel(models.Model):
 	def __unicode__(self):
 		value = "%d - %s" %(self.id,self.channel_name)
 		return value
+	class Meta:
+       		permissions = (
+            		('boss_permission', 'Like a boss'),
+        	)
 
 # Create your models here.
 class Playlist(models.Model):

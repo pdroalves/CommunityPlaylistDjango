@@ -108,6 +108,14 @@
           {% endif %}
         </div>
 
+      {% if not user.is_authenticated %}
+         <div class="queue-control">
+          <input id="newSongUrl" type"=text" placeholder="Digite o nome da música">
+            <button id="addNewSong" type="button" class="btn btn-default" data-toggle="button">
+              Add
+            </button>
+          </div>
+      {% endif %}
         <div class="row-fluid">
           {% if user.is_authenticated %}
             <div class="col-md-6">
@@ -123,7 +131,6 @@
               </div>
               {% endif %}
             </div>
-            
       {% if user.is_authenticated %}
           </div>
 

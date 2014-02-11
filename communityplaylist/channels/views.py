@@ -88,13 +88,13 @@ def log_in(request,channel_id):
         if user.is_active:
             login(request, user)
             # Redirect to a success page.
-            return redirect('index',channel_id)
+            return redirect('channels:index',channel_id)
         else:
             # Return a 'disabled account' error message
-            return redirect('index',channel_id)
+            return redirect('channels:index',channel_id)
     else:
         # Return an 'invalid login' error message.
-        return redirect('index',channel_id)
+        return redirect('channels:index',channel_id)
 
 def log_out(request,channel_id):
     clock = Clock(logger=logger)
@@ -102,10 +102,10 @@ def log_out(request,channel_id):
     if request.user.is_authenticated():
         logout(request)
         logger.info("Logout returned in %f seconds" % clock.stop())
-        return redirect('index',channel_id)
+        return redirect('channels:index',channel_id)
     else:
         logger.info("Logout returned in %f seconds" % clock.stop())
-	return redirect('index',channel_id)
+	return redirect('channels:index',channel_id)
 
 def update(request,channel_id):
     clock = Clock(logger=logger)

@@ -67,7 +67,6 @@ def __get_client_ip(request):
 def index(request,channel_id):
     clock = Clock(logger=logger)
     clock.start()
-    global current_background
     backgrounds,backgrounds_directory = __get_backgrounds()
     dbm = DatabaseManager(channel = channel_id)
     context = { "title":dbm.get_title(),

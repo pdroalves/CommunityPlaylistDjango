@@ -32,11 +32,11 @@ nav #login-trigger {
 }
 
 nav #login-trigger:hover,
-nav #login .active {
+nav #login-lg .active {
   color: orange;
 }
 
-nav #login-content {
+nav #login-content-lg {
   display: none;
   position: absolute;
   top: 24px;
@@ -53,17 +53,17 @@ nav #login-content {
   padding: 15px;
 }
 
-nav #login-content h2{  
+#login-content-lg h2{  
   font-size:30px;
   font-weight: bold;
   color:white;
 }
 
-nav #login-content label{
+#login-content-lg label,#login-content-xs label{
   color:white;
 }
 
-nav #login-content button{
+#login-content-lg button{
  background: transparent;
   border: 1px solid #9E9E9E;
 }
@@ -96,7 +96,7 @@ nav #login-content button{
   margin: 10px 0 0 0;
 }
 
-#login #submit {		
+#login-lg #submit {		
   background: #222222;
   background-color: #d14545;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#e97171), to(#d14545));
@@ -122,8 +122,8 @@ nav #login-content button{
   color: #080808;
 }
 
-#login #submit:hover,
-#login #submit:focus {	
+#login-lg #submit:hover,
+#login-lg #submit:focus {	
   background: #222222;	
   background-color: #e97171;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#d14545), to(#e97171));
@@ -134,24 +134,48 @@ nav #login-content button{
   background-image: linear-gradient(top, #d14545, #e97171);
 }	
 
-#login #submit:active {		
+#login-lg #submit:active {		
   outline: none;
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;		
 }
 
-#login #submit::-moz-focus-inner {
+#login-lg #submit::-moz-focus-inner {
   border: none;
 }
 
-#login label {
+#login-lg label, #login-form label{
   float: right;
   line-height: 30px;
 }
 
-#login label input {
+#login-lg label input,#login-form input,#login-form button {
   position: relative;
   top: 2px;
   right: 2px;
+  max-width:51%;
+  margin-left:22%;
+}
+
+.toggler { 
+  margin-left:30%;
+  width: 500px;
+}
+#login-btn-xs {
+  max-width: 30%;
+  margin-left:33%;
+  padding: .5em 1em;
+  text-decoration: none; 
+}
+#effect { 
+  width: 240px;
+  height: 135px;
+  padding: 0.4em;
+  position: relative; 
+}
+#effect h3 {
+ margin: 0;
+  padding: 0.4em;
+  text-align: center; 
 }

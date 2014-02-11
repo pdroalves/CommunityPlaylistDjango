@@ -34,16 +34,16 @@
           <!-- Login -->
           <nav>
             <ul>
-              <li id="login">
+              <li id="login-lg" class="login hidden-xs">
                   {% if user.is_authenticated %}
-                <a id="login-trigger" href="/channels/{{ channel_id }}/logout">
+                <a id="login-trigger-lg" class="login-trigger" href="/channels/{{ channel_id }}/logout">
                   Logout 
                 </a>
                   {% else %}
-                  <a id="login-trigger" href="#">
+                  <a id="login-trigger-lg" class="login-trigger" href="#">
                   Login <span>▼</span>
                 </a>
-                <div id="login-content" style="display: none;">
+                <div id="login-content-lg" style="display: none;">
                  <div class="container">
                     <form class="form-signin" action="/channels/{{ channel_id }}/login/" method=post>
                     {% csrf_token %}
@@ -66,13 +66,48 @@
                   </button>
                 </div>
               {% endif %}                                   
-              </li>
+              </li>                                  
+              </div>
             </ul>
           </nav>
          </div><!--/.navbar-collapse -->
       </div>
     </div>
 
+    <div id="login-content-xs" class="visible-xs">
+      {% if user.is_authenticated %}
+        <a id="login-trigger-xs" class="login-trigger" href="/channels/{{ channel_id }}/logout">
+          Logout 
+        </a>
+        <div id="player-controls" class="visible-xs">
+          <button type="submit" class="control" id="revert">
+            <img src="{% static 'images/previous.png' %}" alt="Revert"></button>
+          <button type="submit" class="control" id="startPL">
+            <img src="{% static 'images/play.png' %}" alt="Play"></button>
+          <button type="submit" class="control" id="next">
+            <img src="{% static 'images/next.png' %}" alt="Next">
+          </button>
+        </div>
+      {% endif %} 
+      {% if not user.is_authenticated %} 
+
+      <button id="login-btn-xs" class="btn btn-lg btn-primary btn-block ui-state-default ui-corner-all">Login</button> 
+      <div class="toggler">
+        <div id="effect" class="ui-widget-content ui-corner-all">
+          <form id="login-form-xs" class="form-inline" action="/channels/{{ channel_id }}/login/" method=post>
+          {% csrf_token %}
+            <div class="form-group">
+              <label class="sr-only" for="username">Username</label>
+              <input id="username" name=username type="text" class="form-control" placeholder="Username" autofocus="">
+              <label class="sr-only" for="password">Password</label>
+              <input id="password" name=password type="password" class="form-control" placeholder="Password">
+              <button class="btn btn-lg btn-primary btn-block" type="submit">#GoGoGo</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </div>
 
     <div class="container-fluid">
         <div class="alerts">

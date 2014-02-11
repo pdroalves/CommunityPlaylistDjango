@@ -296,14 +296,21 @@ $("#clear-all").click(function(){
 });
 
 
- $('#login-trigger').click(function(){
-            $(this).next('#login-content').slideToggle();
+ $('#login-trigger-lg').click(function(){
+            $(this).next('#login-content-lg').slideToggle();
             $(this).toggleClass('active');          
             
             // Inverte a seta
             if ($(this).hasClass('active'))$(this).find('span').html('&#x25B2;')
               else $(this).find('span').html('&#x25BC;')
             });
+
+    // set effect from select menu value
+    $( "#login-btn-xs" ).click(function() {
+        $("#effect").toggle();
+    });
+ 
+    $( "#effect" ).hide();
 
 function youtubeFeedCallback(data) {
     var s = '';

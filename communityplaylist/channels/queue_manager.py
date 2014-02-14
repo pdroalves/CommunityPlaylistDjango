@@ -120,7 +120,7 @@ class QueueManager:
 							"title":title,
 							"duration":duration,
 							"added_at":int(time.time()),
-							"playtime":self.calc_full_playtime(queue=queue),	
+							"playtime":0,	
 							"voters":{
 								"positive":positive_voters,
 								"negative":negative_voters
@@ -277,7 +277,7 @@ class QueueManager:
 					} for element in queue]
 
 			# Sorting
-			lambda_votes = lambda x: (x["positive"]-x["negative"],x["id"])
+			lambda_votes = lambda x: (x["positive"]-x["negative"])
 			fila.sort(key=lambda_votes,reverse=True)
 
 		return fila

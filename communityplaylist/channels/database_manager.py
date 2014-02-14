@@ -54,8 +54,9 @@ class DatabaseManager:
 		return True
 
 	def add_vote(self,url,creator,positive,negative):
-		video = self.playlist.objects.get(channel=self.channel,url=url)
-		video.vote_set.create(tag=creator,positive=positive,negative=negative)
+		video = self.playlist.objects.filter(channel=self.channel,url=url).order_by('created_at')
+		if len(video) > 0:
+			video[0].vote_set.create(tag=creator,positive=positive,negative=negative)
 		return True
 
 	def rm_video(self,url):

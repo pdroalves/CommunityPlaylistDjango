@@ -174,10 +174,10 @@ var update_function = function(){
                     $("tr").each(function(index,item){
                         queue.push({"url":item.getAttribute("id")});
                     });     
-                    if(!cmp(queue,items)){
+                    //if(!cmp(queue,items)){
                         //console.log("Sorting");
                         check_index_and_sort(items)
-                    };
+                    //};
 
                     update_index();
 

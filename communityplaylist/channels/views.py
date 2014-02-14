@@ -173,9 +173,9 @@ def vote(request,channel_id):
     clock.start()
     queue = QueueManager(channel = channel_id)
 
-    url = request.GET('url')
-    positive = int(request.GET('positive'))
-    negative = int(request.GET('negative'))
+    url = request.GET['url']
+    positive = int(request.GET['positive'])
+    negative = int(request.GET['negative'])
     creator = __get_client_ip(request)
 
     r = queue.register_vote(    url=url,

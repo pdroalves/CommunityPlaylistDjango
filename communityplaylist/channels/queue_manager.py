@@ -183,7 +183,7 @@ class QueueManager:
 		return True
 
 	def next(self):
-		db,queue = self.get_db()
+		queue = self.getQueue()
 
 		if(len(queue) > 0):
 			next_element = queue[0]
@@ -287,10 +287,10 @@ class QueueManager:
 		logger.info(txt)
 		print txt
 		
-		db,queue = self.get_db()
+		#db,queue = self.get_db()
 
 		db.clear_all()		
-		queue = list()
+		#queue = list()
 
 		logger.info("Queue cleared.")
 		return

@@ -7,7 +7,6 @@ import logging
 from models import Channel,Playlist,Vote
 logger = logging.getLogger("DBManager")
 
-
 class DatabaseManager:
 	def __init__(self,channel):
 		assert channel is not None
@@ -71,7 +70,6 @@ class DatabaseManager:
 		self.playlist.objects.filter(	channel=self.channel,
 										played=False,
 										removed=False).update(removed=True)
-
 
 	def mark_video_played(self,url):
 		videos = self.playlist.objects.filter(channel=self.channel,url=url,played=False,removed=False)

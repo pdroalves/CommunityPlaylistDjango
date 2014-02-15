@@ -5,8 +5,8 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 var player;
+var SCRIPT_ROOT = "/channels/"+CHANNEL_ID;
 //var default_start_video = 'dQw4w9WgXcQ'
 //var default_next_video = 'F0BfcdPKw8E'
 var song_playing = ''
@@ -28,15 +28,14 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(evt) {
     console.log('playing '+song_playing)
-    //if(playing)
     evt.target.playVideo();
 };
 
 var update_status_function = function(){
-    $.getJSON(SCRIPT_ROOT + '/_get_playing',
+    $.getJSON(SCRIPT_ROOT+'/get_playing',
         {},
         function(status){
-            //console.log(status.now_playing)
+          console.log(status);
             if(song_playing != status.song_id){
                 console.log(status.song_id)
                 player.loadVideoById(status.song_id);

@@ -183,6 +183,7 @@ class QueueManager:
 		return True
 
 	def next(self):
+		db,queue = self.get_db()
 		queue = self.getQueue()
 
 		if(len(queue) > 0):

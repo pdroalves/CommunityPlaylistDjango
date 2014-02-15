@@ -60,7 +60,6 @@ def __get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-
 ####################################
 ############# VIEWS ################
 
@@ -220,7 +219,8 @@ def set_playing(request,channel_id):
             'song_playing':request.GET['song_playing'],
             'current_time':request.GET['current_time']
     }
-    cache.set('now_playing',now_playing)
+    cache.set('now_playing',now_playing,1)
+    logger.info("set_playing: "+str(now_playing))
     logger.info("set_playing returned in %f seconds" % clock.stop())
     return HttpResponse(1)
 
@@ -240,3 +240,16 @@ def get_playing(request,channel_id):
     logger.info("Now playing: "+str(now_playing['song_playing']))
     logger.info("get_playing returned in %f seconds" % clock.stop())
     return HttpResponse(json.dumps(now_playing))
+
+def remote_player(request,channel_id):    
+    clock = Clock(logger=logger)
+    clock.start()
+    backgrounds,backgrounds_directory = __get_backgrounds()
+    dbm = DatabaseManager(channel = channel_id)
+    context = { "title":dbm.get_title(),
+                "backgrounds":backgrounds,
+                "current_background":'',
+                "channel_id":channel_id
+                }
+    logger.info("Remote player returned in %f seconds" % clock.stop())
+    return render(request,'channels/player.html',context)

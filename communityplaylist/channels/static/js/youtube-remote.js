@@ -11,7 +11,7 @@ var SCRIPT_ROOT = "/channels/"+CHANNEL_ID;
 //var default_next_video = 'F0BfcdPKw8E'
 var song_playing = ''
 var current_time = 0
-var maxDelay = 5.0
+var maxDelay = 1.0
 
 
 function onYouTubeIframeAPIReady() {
@@ -36,13 +36,14 @@ var update_status_function = function(){
         {},
         function(status){
           console.log(status);
+          // Asserts that the video playing is the right one
             if(song_playing != status.song_id){
                 console.log(status.song_id)
                 player.loadVideoById(status.song_id);
                 player.seekTo(status.current_time);
                 song_playing = status.song_id;
             }
-
+            // Asserts that the video position is correct
             if(player.getPlayerState() == YT.PlayerState.PLAYING || 
                 player.getPlayerState() == YT.PlayerState.PAUSED){
                 var diff = Math.abs(player.getCurrentTime() - status.current_time);
@@ -51,6 +52,7 @@ var update_status_function = function(){
                 }
             }
 
+            // Asserts that the video status is correct
             if(status.now_playing == YT.PlayerState.PLAYING){
                player.playVideo();
                console.log("Play");
@@ -58,7 +60,8 @@ var update_status_function = function(){
                player.pauseVideo();
                console.log("Pause");
             }else{
-                player.stopVideo();
+               player.stopVideo();
+               player.clearVideo();
                console.log("End");
             }
         });
@@ -66,7 +69,10 @@ var update_status_function = function(){
 
 function periodicGetStatusUpdate(){
     update_status_function();
-    setTimeout(periodicGetStatusUpdate,1000);
+    setTimeout(periodicGetStatusUpdate,100);
 }
 
-periodicGetStatusUpdate();
+$(document).ready(function(){
+  player.clearVideo();
+  periodicGetStatusUpdate();
+});

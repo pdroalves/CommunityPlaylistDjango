@@ -11,7 +11,6 @@ var currentBG = ''
 
 function periodic_updates(){    
     update_function();
-    update_status_function();
     setTimeout(periodic_updates,1000);
 };
 
@@ -54,25 +53,17 @@ var cmp = function(listA,listB){
     return true;
 };
 
-var update_status_function = function(){
-    $.getJSON(SCRIPT_ROOT + '/get_playing',
-        {},
-        function(status){
-	   try{
-            //console.log(status.now_playing)
-            if(status.song_playing == '0'){
-                update_status_function();
-            }else if(status.now_playing == 1){
-                $("span.now_playing").html('Now playing: <b>'+status.song_playing+'</b>')
-            }else if(status.now_playing == 2){
-                $("span.now_playing").html('Now paused: <b>'+status.song_playing+'</b>')
-            }else{
-                $("span.now_playing").html('<b>Not playing =(</b>')
-            }
-	   }catch(err){
-		console.log("Exception! "+String(err));
-	   }
-        });
+var update_status_function = function(status){
+    //console.log(status.now_playing)
+    if(status.song_playing == '0'){
+        update_status_function();
+    }else if(status.now_playing == 1){
+        $("span.now_playing").html('Now playing: <b>'+status.song_playing+'</b>')
+    }else if(status.now_playing == 2){
+        $("span.now_playing").html('Now paused: <b>'+status.song_playing+'</b>')
+    }else{
+        $("span.now_playing").html('<b>Not playing =(</b>')
+    }
 };
 
 var get_video_container = function(id,title,duration,vpositive,vnegative){
@@ -128,7 +119,7 @@ var get_video_container = function(id,title,duration,vpositive,vnegative){
 
 var update_function = function(){
            $.getJSON( SCRIPT_ROOT+'/update',
-                {},
+                {"mode":"full"},
                 function(data){
                     var items = data.queue;
                     var videos = document.getElementsByClassName('video');
@@ -186,6 +177,9 @@ var update_function = function(){
                         currentBG = data.current_background;
                         change_background(data.current_background); 
                     }
+
+                    // Update now_playing
+                    update_status_function(data.now_playing);
                 } 
             );                
         };

@@ -242,7 +242,7 @@ def get_playing(request,channel_id):
     else:
         # now_playing_data = cache.get('now_playing')
         now_playing_data = now_playing[channel_id]    
-    logger.info("Now playing: "+str(now_playing_data['song_playing']))
+    logger.info("Now playing: %s" % now_playing_data['now_playing'])
     logger.info("get_playing returned in %f seconds" % clock.stop())
     return HttpResponse(json.dumps(now_playing_data))
 

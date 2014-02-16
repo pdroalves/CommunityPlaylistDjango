@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse_lazy
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 logger = logging.getLogger("ChannelsViews")
+now_playing = dict()
 
 #####################################
 ######## SUPPORT METHODS ############
@@ -210,36 +211,40 @@ def set_background(request,channel_id):
 
 @permission_required("channels.boss_permission",raise_exception=True)
 def set_playing(request,channel_id):
+    global now_playing
     clock = Clock(logger=logger)
     clock.start()
-    now_playing = {
+    now_playing_data = {
             'title':request.GET['title'],
             'now_playing':request.GET['now_playing'],
             'song_id':request.GET['song_id'],
             'song_playing':request.GET['song_playing'],
             'current_time':request.GET['current_time']
     }
-    cache.set('now_playing',now_playing,1)
+    # cache.set('now_playing',now_playing_data,3000)
+    now_playing[channel_id] = now_playing_data
     logger.info("set_playing: "+str(now_playing))
     logger.info("set_playing returned in %f seconds" % clock.stop())
     return HttpResponse(1)
 
 def get_playing(request,channel_id):
+    global now_playing
     clock = Clock(logger=logger)
     clock.start()
-    if not cache.has_key('now_playing'):
-        now_playing = { 'title':'Empty',
+    # if not cache.has_key('now_playing'):
+    if not now_playing.has_key(channel_id):
+        now_playing_data = { 'title':'Empty',
                         'now_playing':-1,
                         'song_id':'Empty',
                         'song_playing':'Empty',
                         'current_time':0
                         }          
     else:
-        now_playing = cache.get('now_playing')
-    
-    logger.info("Now playing: "+str(now_playing['song_playing']))
+        # now_playing_data = cache.get('now_playing')
+        now_playing_data = now_playing[channel_id]    
+    logger.info("Now playing: "+str(now_playing_data['song_playing']))
     logger.info("get_playing returned in %f seconds" % clock.stop())
-    return HttpResponse(json.dumps(now_playing))
+    return HttpResponse(json.dumps(now_playing_data))
 
 def remote_player(request,channel_id):    
     clock = Clock(logger=logger)

@@ -61,6 +61,9 @@ def __get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+def __get_nowplaying_cache_tag(channel_id):
+    return 'now_playing_%s'%str(channel_id)
+
 ####################################
 ############# VIEWS ################
 
@@ -221,8 +224,7 @@ def set_playing(request,channel_id):
             'song_playing':request.GET['song_playing'],
             'current_time':request.GET['current_time']
     }
-    # cache.set('now_playing',now_playing_data,3000)
-    now_playing[channel_id] = now_playing_data
+    cache.set(__get_nowplaying_cache_tag(channel_id),now_playing_data,3)
     logger.info("set_playing: "+str(now_playing))
     logger.info("set_playing returned in %f seconds" % clock.stop())
     return HttpResponse(1)
@@ -231,8 +233,8 @@ def get_playing(request,channel_id):
     global now_playing
     clock = Clock(logger=logger)
     clock.start()
-    # if not cache.has_key('now_playing'):
-    if not now_playing.has_key(channel_id):
+    if not cache.has_key(__get_nowplaying_cache_tag(channel_id)):
+    #if not now_playing.has_key(channel_id):
         now_playing_data = { 'title':'Empty',
                         'now_playing':-1,
                         'song_id':'Empty',
@@ -240,8 +242,8 @@ def get_playing(request,channel_id):
                         'current_time':0
                         }          
     else:
-        # now_playing_data = cache.get('now_playing')
-        now_playing_data = now_playing[channel_id]    
+        now_playing_data = cache.get(__get_nowplaying_cache_tag(channel_id))
+        #now_playing_data = now_playing[channel_id]    
     logger.info("Now playing: %s" % now_playing_data['now_playing'])
     logger.info("get_playing returned in %f seconds" % clock.stop())
     return HttpResponse(json.dumps(now_playing_data))

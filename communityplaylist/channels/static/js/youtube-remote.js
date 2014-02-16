@@ -32,9 +32,10 @@ function onPlayerReady(evt) {
 };
 
 var update_status_function = function(){
-    $.getJSON(SCRIPT_ROOT+'/get_playing',
-        {},
-        function(status){
+    $.getJSON(SCRIPT_ROOT+'/update',
+        {"mode":"player"},
+        function(data){
+          status = data.now_playing;
           console.log(status);
           // Asserts that the video playing is the right one
             if(song_playing != status.song_id){
@@ -61,7 +62,6 @@ var update_status_function = function(){
                console.log("Pause");
             }else{
                player.stopVideo();
-               player.clearVideo();
                console.log("End");
             }
         });
@@ -73,6 +73,5 @@ function periodicGetStatusUpdate(){
 }
 
 $(document).ready(function(){
-  player.clearVideo();
   periodicGetStatusUpdate();
 });

@@ -1,0 +1,13 @@
+body {
+	background:radial-gradient(circle, rgb(138, 138, 138) 5%, rgb(12, 12, 12));
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position:50% 5%;
+	padding-top: 50px;
+	padding-bottom: 20px;
+	text-align:center;	
+}
+
+.jumbotron{
+	background-color:transparent;
+}

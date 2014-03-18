@@ -161,14 +161,9 @@ var update_function = function(){
                     });
 
                     // Reorder items
-                    var queue = new Array();
-                    $("tr").each(function(index,item){
-                        queue.push({"url":item.getAttribute("id")});
-                    });     
-                    //if(!cmp(queue,items)){
-                        //console.log("Sorting");
-                        check_index_and_sort(items)
-                    //};
+                    for(item in items){
+                        $("#"+items[item].url).appendTo(itemList);
+                    }
 
                     update_index();
 

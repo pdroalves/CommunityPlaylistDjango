@@ -1,0 +1,19 @@
+<!doctype HTML>
+<html>
+    <head>
+        <title>{{ title }} - Channel {{ channel_id }} - Remote Player</title>
+        <meta charset="utf-8" />
+        {% load static from staticfiles %}
+    </head>
+    <body style="padding:0px;margin:0px;">
+            <div id="player" style="position:fixed; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></div>
+    
+    <script language="javascript">
+        var STATIC_URL = "{{ STATIC_URL|escapejs }}";
+        var CHANNEL_ID = "{{ channel_id|escapejs }}";
+    </script>
+    <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
+    <script src="{% static 'js/pubsub.js' %}"></script>
+    <script src="{% static 'js/youtube-remote.js' %}"></script>
+    </body>
+</html>

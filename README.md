@@ -1,2 +1,3 @@
 # CommunityPlaylistDjango
-Django fork of Community Playlist.
+
+This is a fork from CommunityPlaylist repository. 

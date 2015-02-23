@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+   {% load static from staticfiles %}
+
+    <title>{{ title }} - Channel {{ channel_id }}</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/channelbase.css' %}"  type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}"  type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/jquery-ui-1.10.4.custom.min.css' %}"  type="text/css" />
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">{{ title }}</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul id="now_playing" class="nav navbar-nav">
+            <span class="now_playing" id="empty"></span>
+          </ul>
+          <!-- Login -->
+          <nav>
+            <ul>
+              <li id="login-lg" class="login hidden-xs">
+                  {% if user.is_authenticated %}
+                <a id="login-trigger-lg" class="login-trigger" href="/channels/{{ channel_id }}/logout">
+                  Logout 
+                </a>
+                  {% else %}
+                  <a id="login-trigger-lg" class="login-trigger" href="#">
+                  Login <span>▼</span>
+                </a>
+                <div id="login-content-lg" style="display: none;">
+                 <div class="container">
+                    <form class="form-signin" action="/channels/{{ channel_id }}/login/" method=post>
+                    {% csrf_token %}
+                      <h2 class="form-signin-heading">Login</h2>
+                      <input name=username type="text" class="form-control" placeholder="Username" autofocus="">
+                      <input name=password type="password" class="form-control" placeholder="Password">
+                      <button class="btn btn-lg btn-primary btn-block" type="submit">#GoGoGo</button>
+                    </form>
+                  </div>
+                </div>
+                  {% endif %}
+              {% if user.is_authenticated %}
+                <div id="player-controls">
+                  <button type="submit" class="control" id="revert">
+                    <img src="{% static 'images/previous.png' %}" alt="Revert"></button>
+                  <button type="submit" class="control" id="startPL">
+                    <img src="{% static 'images/play.png' %}" alt="Play"></button>
+                  <button type="submit" class="control" id="next">
+                    <img src="{% static 'images/next.png' %}" alt="Next">
+                  </button>
+                </div>
+              {% endif %}                                   
+              </li>                                  
+              </div>
+            </ul>
+          </nav>
+         </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <div id="login-content-xs" class="visible-xs">
+      {% if user.is_authenticated %}
+        <a id="login-trigger-xs" class="login-trigger" href="/channels/{{ channel_id }}/logout">
+          Logout 
+        </a>
+        <div id="player-controls" class="visible-xs">
+          <button type="submit" class="control" id="revert">
+            <img src="{% static 'images/previous.png' %}" alt="Revert"></button>
+          <button type="submit" class="control" id="startPL">
+            <img src="{% static 'images/play.png' %}" alt="Play"></button>
+          <button type="submit" class="control" id="next">
+            <img src="{% static 'images/next.png' %}" alt="Next">
+          </button>
+        </div>
+      {% endif %} 
+      {% if not user.is_authenticated %} 
+
+      <button id="login-btn-xs" class="btn btn-lg btn-primary btn-block ui-state-default ui-corner-all">Login</button> 
+      <div class="toggler">
+        <div id="effect" class="ui-widget-content ui-corner-all">
+          <form id="login-form-xs" class="form-inline" action="/channels/{{ channel_id }}/login/" method=post>
+          {% csrf_token %}
+            <div class="form-group">
+              <label class="sr-only" for="username">Username</label>
+              <input id="username" name=username type="text" class="form-control" placeholder="Username" autofocus="">
+              <label class="sr-only" for="password">Password</label>
+              <input id="password" name=password type="password" class="form-control" placeholder="Password">
+              <button class="btn btn-lg btn-primary btn-block" type="submit">#GoGoGo</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="container-fluid">
+        <div class="alerts">
+          {% if message.tags == 'error' %}
+          {% for message in messages %}
+          <div class="row-fluid">
+            <div class="alert alert-danger alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              <strong>{{ message }}</strong>
+            </div>
+          </div>
+         {% endfor %}
+          {% endif %}
+          {% if message.tags == 'success' %}
+          {% for message in messages %}
+          <div class="row-fluid">
+            <div class="alert alert-success alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              <strong>{{ message }}</strong>
+            </div>
+          </div>
+         {% endfor %}
+          {% endif %}
+          {% if message.tags == 'warning' %}
+          {% for message in messages %}
+          <div class="row-fluid">
+            <div class="alert alert-warning alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              <strong>{{ message }}</strong>
+            </div>
+          </div>
+         {% endfor %}
+          {% endif %}
+        </div>
+
+      {% if not user.is_authenticated %}
+         <div class="queue-control">
+          <input id="newSongUrl" type"=text" placeholder="Digite o nome da música">
+            <button id="addNewSong" type="button" class="btn btn-default" data-toggle="button">
+              Add
+            </button>
+          </div>
+      {% endif %}
+        <div class="row-fluid">
+          {% if user.is_authenticated %}
+            <div class="col-md-6">
+          {% endif %}
+
+            <div id="queue-list" style="overflow:auto;">
+              <table id="show-items" cellpadding="0" cellspacing="0" border="0" class="table  table-hover table-condensed table-striped" >
+              </table>
+
+              {% if user.is_authenticated %}
+              <div class="queue-control">
+                <a href="#" id="clear-all">Clear All</a>
+              </div>
+              {% endif %}
+            </div>
+      {% if user.is_authenticated %}
+          </div>
+
+          <div class="col-md-6">	 
+            
+            <div id="player" align="center"></div>
+            
+            <div class="queue-control">
+              <input id="newSongUrl" type"=text" placeholder="Digite o nome da música">
+                <button id="addNewSong" type="button" class="btn btn-default" data-toggle="button">
+                  Add
+                </button>
+            </div>
+            <br>
+            <div id="player-vinheta">
+                  <audio id="player_vinheta1">
+                    <source src="" type="audio/mpeg" />
+                    <em>No support to HTML5 audio.</em>
+                  </audio>
+                  <audio id="player_vinheta2">
+                    <source src="" type="audio/mpeg" />
+                    <em>No support to HTML5 audio.</em>
+                  </audio>
+                  <audio id="player_vinheta3">
+                    <source src="" type="audio/mpeg" />
+                    <em>No support to HTML5 audio.</em>
+                  </audio>
+                  
+                  <input type="file" class="control" id="input_vinheta1" accept="audio/*" style="display:none" onchange="javascript:set_vinheta1(this.files)"/>
+                  <input type="file" class="control" id="input_vinheta2" accept="audio/*" style="display:none" onchange="javascript:set_vinheta2(this.files)"/>
+                  <input type="file" class="control" id="input_vinheta3" accept="audio/*" style="display:none" onchange="javascript:set_vinheta3(this.files)"/>
+
+                  <a href="javascript:get_vinheta1()">
+                      <img src="{% static 'images/vinheta.png' %}" alt="Vinheta1">
+                  </a>
+                    <a href="javascript:play_vinheta1()">
+                      <span class="vinheta_txt" id="txt_vinheta1">Empty</span>
+                    </a>
+                    <br>
+                  <a href="javascript:get_vinheta2()">
+                      <img src="{% static 'images/vinheta.png' %}" alt="Vinheta2">
+                  </a>
+                    <a href="javascript:play_vinheta2()">
+                      <span class="vinheta_txt" id="txt_vinheta2">Empty</span>
+                    </a>
+                    <br>
+                  <a href="javascript:get_vinheta3()">
+                      <img src="{% static 'images/vinheta.png' %}" alt="Vinheta3">
+                  </a>
+                    <a href="javascript:play_vinheta3()"> 
+                      <span class="vinheta_txt" id="txt_vinheta3">Empty</span>
+                    </a>
+                    <br>
+            </div>
+            <div class="row" id="controls">
+                <h1 class="header"> Controles </h1>
+                <div id="bg">
+                  <div class="col-md-6">
+                  <p>Background</p>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        Browse
+                        <span class="caret"></span>
+                      </button>
+                      <ul id="background-chooser" class="dropdown-menu">
+                        {% for background in backgrounds %}
+                        {% if background == current_background %}
+                        <li>
+                          
+                            <div class="row">
+                              <div class="col-md-1">
+                                <span class="glyphicon glyphicon-check"></span>
+                              </div>
+                              <div class="col-md-1">
+                                <a><p>{{ background }} </p></a>                          
+                              </div>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li>
+                          <a><p>{{ background }}</p></a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                      </ul>
+                      <button id="save-background" type="button" class="btn btn-default" disabled=>Save</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+            </div>
+          </div>
+      {% endif %}
+      </div>
+    </div>
+  
+    <script language="javascript">
+    	var STATIC_URL = "{{ STATIC_URL|escapejs }}";
+    	var CHANNEL_ID = "{{ channel_id|escapejs }}";
+	</script>
+    <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.core.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.widget.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.position.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.menu.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.autocomplete.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/pubsub.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/autocomplete.js' %}"></script>
+    <script src="{% static 'js/youtube.js' %}"></script>
+  </body>
+</html>
+
